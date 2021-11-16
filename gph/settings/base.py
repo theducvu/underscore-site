@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 '''
 
 import os
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -22,7 +23,7 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'FIXME_SECRET_KEY_HERE')
+SECRET_KEY = os.environ.get('SECRET_KEY', get_random_secret_key())
 
 RECAPTCHA_SITEKEY = None
 RECAPTCHA_SECRETKEY = None
@@ -30,7 +31,7 @@ RECAPTCHA_SECRETKEY = None
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "178.128.216.138"]
 
 # Application definition
 
