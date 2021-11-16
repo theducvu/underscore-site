@@ -4,9 +4,9 @@ from django.utils import timezone
 
 # included in various templates. NOTE, sometimes appears with a "the" before
 # it, maybe check those are what you want.
-HUNT_TITLE = 'FIXME Puzzle Hunt'
+HUNT_TITLE = 'Underscore Puzzle Hunt'
 # included in various templates and displayed on the static site
-HUNT_ORGANIZERS = 'FIXME Puzzlesetters'
+HUNT_ORGANIZERS = 'Team Underscore'
 # included in various templates and set as reply-to for automatic emails
 CONTACT_EMAIL = 'FIXME@example.com'
 # the sender from which automatic emails are sent; your mail sending service
