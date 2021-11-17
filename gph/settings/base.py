@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 '''
 
 import os
+from dotenv import load_dotenv
 from django.core.management.utils import get_random_secret_key
 
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -32,7 +35,7 @@ RECAPTCHA_SECRETKEY = None
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "178.128.216.138"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Application definition
 
@@ -114,10 +117,11 @@ ASGI_APPLICATION = 'gph.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'underscore-db',
-        'USER': 'root',
+        'NAME': os.getenv("DATABASE_NAME"),
+        'USER': os.getenv("DATABASE_USER"),
+        'PASSWORD': os.getenv("DATABASE_PW"),
         'HOST': 'localhost',
-        'PORT': ''
+        'PORT': '5432'
     },
     'sqlite3': {
         'ENGINE': 'django.db.backends.sqlite3',

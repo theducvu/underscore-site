@@ -26,3 +26,5 @@ dump.rdb
 \.vscode/
 
 /logs/*.log
+
+*.env
