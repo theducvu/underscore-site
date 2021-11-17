@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 from django.core.management.utils import get_random_secret_key
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -23,7 +24,7 @@ os.makedirs(LOGS_DIR, exist_ok=True)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get('SECRET_KEY', get_random_secret_key())
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 
 RECAPTCHA_SITEKEY = None
 RECAPTCHA_SECRETKEY = None
@@ -85,7 +86,7 @@ CHANNEL_LAYERS = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
 
-ROOT_URLCONF = 'gph.urls'
+ROOT_URLCONF = "gph.urls"
 
 TEMPLATES = [
     {
@@ -112,6 +113,13 @@ ASGI_APPLICATION = 'gph.asgi.application'
 
 DATABASES = {
     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'underscore-db',
+        'USER': 'root',
+        'HOST': 'localhost',
+        'PORT': ''
+    },
+    'sqlite3': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
