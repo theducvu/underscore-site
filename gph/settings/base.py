@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 '''
 
 import os
+import logging
 from dotenv import load_dotenv
 from django.core.management.utils import get_random_secret_key
-
+import netifaces
 
 load_dotenv()
 
@@ -21,13 +22,13 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Ensure logs directory exists.
-LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+LOGS_DIR = os.path.abspath(os.path.join(BASE_DIR, 'logs/'))
 os.makedirs(LOGS_DIR, exist_ok=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 RECAPTCHA_SITEKEY = None
 RECAPTCHA_SECRETKEY = None
@@ -189,7 +190,8 @@ EMAIL_SUBJECT_PREFIX = '[FIXME Puzzle Hunt] '
 #     'formatter': 'django',
 # },
 
-LOGGING = {
+LOGGING_CONFIG = None
+logging.config.dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
@@ -198,7 +200,7 @@ LOGGING = {
         },
         'puzzles': {
             'format': '%(asctime)s [%(levelname)s] %(name)s %(message)s'
-        },
+        }
     },
     # FIXME you may want to change the filenames to something like
     # /srv/logs/django.log or similar
@@ -206,54 +208,68 @@ LOGGING = {
         'django': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGS_DIR, 'django.log'),
-            'formatter': 'django',
+            'filename': '/srv/logs/django.log',
+            'formatter': 'django'
         },
         'general': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGS_DIR, 'general.log'),
-            'formatter': 'puzzles',
+            'filename': '/srv/logs/general.log',
+            'formatter': 'puzzles'
         },
         'puzzle': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGS_DIR, 'puzzle.log'),
-            'formatter': 'puzzles',
+            'filename': '/srv/logs/puzzle.log',
+            'formatter': 'puzzles'
         },
         'request': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(LOGS_DIR, 'request.log'),
-            'formatter': 'puzzles',
-        },
+            'filename': '/srv/logs/request.log',
+            'formatter': 'puzzles'
+        }
     },
     'loggers': {
         'django': {
             'handlers': ['django'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': True
         },
         'puzzles': {
             'handlers': ['general'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': True
         },
         'puzzles.puzzle': {
             'handlers': ['puzzle'],
             'level': 'INFO',
-            'propagate': False,
+            'propagate': False
         },
         'puzzles.request': {
             'handlers': ['request'],
             'level': 'INFO',
-            'propagate': False,
-        },
-    },
-}
+            'propagate': False
+        }
+    }
+})
 
 # Google Analytics
 GA_CODE = ''
 
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
+
+# Find out what the IP addresses are at run time
+# This is necessary because otherwise Gunicorn will reject the connections
+def ip_addresses():
+    ip_list = []
+    for interface in netifaces.interfaces():
+        addrs = netifaces.ifaddresses(interface)
+        for x in (netifaces.AF_INET, netifaces.AF_INET6):
+            if x in addrs:
+                ip_list.append(addrs[x][0]['addr'])
+    return ip_list
+
+
+ALLOWED_HOSTS += ip_addresses()
